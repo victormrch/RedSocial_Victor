@@ -5,6 +5,7 @@
  */
 package redSocial.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -43,5 +44,28 @@ public class AmistadesFacade extends AbstractFacade<Amistades> {
         } catch (Exception ex) {
             throw new Exception(ex);
         }
+    }
+    
+      public List<Usuario> GroupAmistades(Usuario user) throws Exception {
+
+        try {
+            List<Amistades> listaAmist = user.getAmistadesList();
+            List<Usuario> misAmigos= new ArrayList ();
+            for (Amistades amistad: listaAmist) {
+                misAmigos.add(amistad.getIdUsuario2());
+                
+            }
+            
+            misAmigos.add(user);
+       
+            String sql  = "SELECT DISTINCT a FROM Usuario a WHERE a  NOT IN :list";
+            List<Usuario> res =  em.createQuery(sql).setParameter("list", misAmigos).getResultList();
+            return  res;
+        } catch (Exception ex) {
+            throw new Exception(ex);
+        }
+
+      
+
     }
 }
