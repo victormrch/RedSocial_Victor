@@ -83,9 +83,24 @@
                         <a href="mailto:name@email.com">${usuario.email}</a>
                     </div>
                     <div class="subheading mb-2 text-secondary">Mis últimas Publicaciones</div>
-                    <c:forEach items="${usuario.postList}" var="Post"> 
-                        <p class="lead mb-5">${Post.contenido}</p>
+                    <tr>
+                        <c:forEach items="${usuario.postList}" var="Post">
+                        <form action="PerfilUsuario" method="POST">
+                            <div class="container">
+                                <div class="row">
+
+                                    <div class="col-8">
+                                        <p class="lead mb-5">${Post.contenido}</p>
+                                    </div>
+                                    <div class="col-4">
+                                        <button type="submit" value="${Post.idPost}" name="borrarPost" class="btn btn-secondary btn-lg active" aria-pressed="true">Borrar Comentario</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </form>
                     </c:forEach>
+                    </tr>
                     <div class="social-icons">
                         <a href="#">
                             <i class="fab fa-linkedin-in"></i>
@@ -165,11 +180,11 @@
                                 <div class="resume-content">
                                     <div class="subheading mb-3 text-dark">Últimos comentarios del grupo</div>
                                     <c:forEach items="${grupos.comentariosList}" var="comentariosgrupos"> 
-                                     <h5 class="mb-0 text-secondary text-left">${comentariosgrupos.comentario}</h5>
+                                        <h5 class="mb-0 text-secondary text-left">${comentariosgrupos.comentario}</h5>
                                     </c:forEach> 
                                 </div>
                             </div>
-                            
+
                         </div>
                     </c:forEach>  
 
@@ -209,14 +224,14 @@
                                 <option selected>Elige donde quieres publicar...</option>
                                 <option value="0">A todo el mundo</option>
                                 <c:forEach items="${usuario.gruposList}" var="grupos"> 
-                                <option value="${grupos.idgrupos}">${grupos.nombregrupo}</option>
+                                    <option value="${grupos.idgrupos}">${grupos.nombregrupo}</option>
                                 </c:forEach>
                             </select>
                             <div class="input-group-append">
                                 <button class="btn btn-outline-secondary" type="submit">Publicar</button>
                             </div>
                         </div>
-                      </form>
+                    </form>
 
                 </div>
             </section>
@@ -238,31 +253,15 @@
 
                     <div class="container px-lg-5">
                         <div class="row mx-lg-n5">
-
+                          <c:forEach items="${amigossugeridos}" var="amigo">
                             <div class="col py-3 px-lg-5 border bg-light">
-                                <h3 class="mb-0 text-secondary text-center">Victor Ramón</h3>
-                                <br>
-                                <img class="img-fluid img-profile rounded-circle mx-auto mb-2" src="perfil/img/profile3.jpg" alt="">
-                                <br>
-                                <button type="button align-items-center text-primary" class="justify-content-center btn btn-outline-danger">Seguir</button>
-                            </div>
-
-                            <div class="col py-3 px-lg-5 border bg-light">
-                                <h3 class="mb-0 text-secondary text-center">Andrea Silva</h3>
+                                <h3 class="mb-0 text-secondary text-center">${amigo.nombre}</h3>
                                 <br>
                                 <img class="img-fluid img-profile rounded-circle mx-auto mb-2" src="perfil/img/profile4.jpg" alt="">
                                 <br>
                                 <button type="button align-items-center text-primary" class="justify-content-center btn btn-outline-danger">Seguir</button>
                             </div>
-
-                            <div class="col py-3 px-lg-5 border bg-light">
-                                <h3 class="mb-0 text-secondary text-center">Marta Ferreiro</h3>
-                                <br>
-                                <img class="img-fluid img-profile rounded-circle mx-auto mb-2" src="perfil/img/profile5.jpg" alt="">
-                                <br>
-                                <button type="button align-items-center text-primary" class="btn btn-outline-danger">Seguir</button>
-                            </div>
-
+                           </c:forEach>                           
                         </div>
                     </div>
                 </div>
@@ -275,26 +274,22 @@
                 <div class="w-100">
                     <h2 class="mb-5">Unirse a Grupos Existentes</h2>
 
-                    <div class="center-block container-fluid px-lg-5">
-                        <div class="row mx-lg-n5 center-block">
-                            <div class="col-sm-4 py-3 px-lg-5 border bg-light">
-                                <h3 class="mb-0 text-secondary text-center">Bike Team</h3>
-                                <br>
-                                <img class="img-fluid img-profile rounded-circle mx-auto mb-2" src="perfil/img/biketeam.jpg" alt="">
-                                <br>
-                                <button type="button" class="btn btn-primary btn-lg btn-block">Unirse</button>
-                            </div>
+                               
+                        <div class="center-block container-fluid px-lg-5">
 
-                            <div class="col-sm-4 py-3 px-lg-5 border bg-light center-block">
-                                <h3 class="mb-0 text-secondary text-center">Cardio Workout</h3>
-                                <br>
-                                <img class="img-fluid img-profile rounded-circle mx-auto mb-2" src="perfil/img/cardioworkout.jpg" alt="">
-                                <br>
-                                <button type="button" class="btn btn-primary btn-lg btn-block">Unirse</button>
+                            <div class="row mx-lg-n5 center-block">
+                                <c:forEach items="${gruposExistentes}" var="grupo">  
+                                <div class="col-sm-4 py-3 px-lg-5 border bg-light">
+                                    <h3 class="mb-0 text-secondary text-center">${grupo.nombregrupo}</h3>
+                                    <br>
+                                    <img class="img-fluid img-profile rounded-circle mx-auto mb-2" src="perfil/img/biketeam.jpg" alt="">
+                                    <br>
+                                    <button type="button" class="btn btn-primary btn-lg btn-block">Unirse</button>
+                                </div>
+                                  </c:forEach>
                             </div>
-
                         </div>
-                    </div>
+                    
                     <br>
                     <h2 class="mb-5">Añadir Nuevo Grupo</h2>
                     <form action="PerfilUsuario" method="POST">
