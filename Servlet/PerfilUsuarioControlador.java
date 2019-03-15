@@ -16,9 +16,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import redSocial.dao.AmistadesFacade;
 import redSocial.dao.ComentariosGruposFacade;
 import redSocial.dao.GruposFacade;
 import redSocial.dao.PostFacade;
+import redSocial.modelos.Amistades;
 import redSocial.modelos.ComentariosGrupos;
 import redSocial.modelos.Grupos;
 import redSocial.modelos.Post;
@@ -41,9 +43,14 @@ public class PerfilUsuarioControlador extends HttpServlet {
 
     @EJB
     public GruposFacade gruposDao;
-    
+
     @EJB
     public ComentariosGruposFacade ComentariosGruposDao;
+    
+    @EJB
+    public AmistadesFacade AmistadesDao;
+    
+    
 
     private final static String SUCCESS = "/perfil/perfil.jsp";
 
@@ -76,45 +83,77 @@ public class PerfilUsuarioControlador extends HttpServlet {
         try {
             Usuario user = (Usuario) request.getSession().getAttribute("usuario");
             
-             if (request.getParameter("nombregrupo") != null) {
+            // Crear Nuevo Grupo
+            if (request.getParameter("nombregrupo") != null) {
                 String nombregrupo = request.getParameter("nombregrupo");
                 Grupos nuevoGrupo = PerfilUsuarioControlador
                         .CrearGrupo(user, nombregrupo);
 
                 gruposDao.create(nuevoGrupo);
-                
+
                 PerfilUsuarioControlador.ActualizarGrupos(nuevoGrupo, user);
 
+            //Crear COMENTARIO en Grupo
             } else if (request.getParameter("privacidad") != null) {
-                String cadenaPrivacidad=request.getParameter("privacidad");
-                int privacidad=Integer.parseInt(cadenaPrivacidad);
-                if (privacidad !=0){
+                String cadenaPrivacidad = request.getParameter("privacidad");
+                int privacidad = Integer.parseInt(cadenaPrivacidad);
+                if (privacidad != 0) {
                     Grupos gruposSeleccionado = PerfilUsuarioControlador.
                             BuscarGrupos(user, privacidad);
-                    
+
                     String contenido = request.getParameter("contenido");
                     ComentariosGrupos nuevoComentario = PerfilUsuarioControlador.
                             ConstruirComentario(user, contenido, gruposSeleccionado);
-                   
+
                     ComentariosGruposDao.create(nuevoComentario);
-                    
+
                     PerfilUsuarioControlador.ActualizarComentarioList(gruposSeleccionado, nuevoComentario);
-                    
-                }else{
-                    
-                String contenido = request.getParameter("contenido");
-                Post nuevoPost = PerfilUsuarioControlador
-                        .ConstruirPost(user, contenido);
 
-                postDao.create(nuevoPost);
+                } else {
 
-                PerfilUsuarioControlador.ActualizarPostList(user, nuevoPost);
-                }
+                    // Crear POST    
+                    String contenido = request.getParameter("contenido");
+                    Post nuevoPost = PerfilUsuarioControlador
+                            .ConstruirPost(user, contenido);
+
+                    postDao.create(nuevoPost);
+
+                    PerfilUsuarioControlador.ActualizarPostList(user, nuevoPost, 1);
+                } 
+                
+            }else if (request.getParameter("borrarPost") != null ){
+                int idPost = Integer.parseInt(request.getParameter("borrarPost"));
+                
+                //Busco el post a borrar
+                Post postBorrar = PerfilUsuarioControlador.BuscarPost(user, idPost);
+                
+                //Borro el post encontrado
+                
+                postDao.remove(postBorrar);
+                
+                //Actualizar lista de post del usuario
+                
+                PerfilUsuarioControlador.ActualizarPostList(user, postBorrar, 2);
+                        
+                
                 
             }
-                    
+            
+            //Buscar Post Amigos
+
             List<Post> res = svc.buscarPostDeAmigos(user);
             request.setAttribute("PostAmigos", res);
+            
+            
+            //Mostrar Grupos Sugeridos, donde el usuario no está registrado
+            
+            List<Grupos> grupo = gruposDao.GroupList(user);
+            request.setAttribute("gruposExistentes", grupo);
+            
+            //Mostrar Amigos Sugeridos
+            
+            List<Usuario> amistades = AmistadesDao.GroupAmistades(user);
+                    request.setAttribute("amigossugeridos", amistades);
 
             request.getRequestDispatcher(SUCCESS).forward(request, response);
         } catch (Exception ex) {
@@ -145,9 +184,8 @@ public class PerfilUsuarioControlador extends HttpServlet {
         return post;
 
     }
-    
-    private static ComentariosGrupos ConstruirComentario
-        (Usuario usuario, String comentario, Grupos grupoSeleccionado) {
+
+    private static ComentariosGrupos ConstruirComentario(Usuario usuario, String comentario, Grupos grupoSeleccionado) {
 
         ComentariosGrupos comentarioGrupo = new ComentariosGrupos();
         comentarioGrupo.setComentario(comentario);
@@ -158,19 +196,23 @@ public class PerfilUsuarioControlador extends HttpServlet {
         return comentarioGrupo;
     }
 
-    private static void ActualizarComentarioList 
-        (Grupos grupos, ComentariosGrupos comentariosGrupos){ 
-            List <ComentariosGrupos> antiguosComentarios = 
-                    grupos.getComentariosList();
-            antiguosComentarios.add(comentariosGrupos);
-            grupos.setComentariosList(antiguosComentarios);
-        
+    private static void ActualizarComentarioList(Grupos grupos, ComentariosGrupos comentariosGrupos) {
+        List<ComentariosGrupos> antiguosComentarios
+                = grupos.getComentariosList();
+        antiguosComentarios.add(comentariosGrupos);
+        grupos.setComentariosList(antiguosComentarios);
+
     }
-            
-    private static void ActualizarPostList(Usuario usuario, Post post) {
+
+    private static void ActualizarPostList(Usuario usuario, Post post, int toDo) {
 
         List<Post> antiguosPost = usuario.getPostList();
-        antiguosPost.add(post);
+        if (toDo == 1) {
+            antiguosPost.add(post);
+        } else if (toDo == 2) {
+            antiguosPost.remove(post);
+        }
+
         usuario.setPostList(antiguosPost);
     }
 
@@ -185,25 +227,40 @@ public class PerfilUsuarioControlador extends HttpServlet {
 
         return grupos;
     }
-    
-    private static void ActualizarGrupos(Grupos grupo, Usuario usuario){
-        List <Grupos> antiguosGrupos = usuario.getGruposList();
+
+    private static void ActualizarGrupos(Grupos grupo, Usuario usuario) {
+        List<Grupos> antiguosGrupos = usuario.getGruposList();
         antiguosGrupos.add(grupo);
         usuario.setGruposList(antiguosGrupos);
     }
-    
-    private static Grupos BuscarGrupos(Usuario usuario, Integer grupoId ){
-        Iterator grupos= usuario.getGruposList().iterator();
-        boolean encontrado=false;
-        Grupos resultado= null;
+
+    private static Grupos BuscarGrupos(Usuario usuario, Integer grupoId) {
+        Iterator grupos = usuario.getGruposList().iterator();
+        boolean encontrado = false;
+        Grupos resultado = null;
         Grupos iteratorGrupos;
-        while (grupos.hasNext()&& !encontrado){
-            iteratorGrupos=(Grupos)grupos.next();
-            if(iteratorGrupos.getIdgrupos() == grupoId){
-                resultado=iteratorGrupos;
-                encontrado=true;
-            }  
+        while (grupos.hasNext() && !encontrado) {
+            iteratorGrupos = (Grupos) grupos.next();
+            if (iteratorGrupos.getIdgrupos() == grupoId) {
+                resultado = iteratorGrupos;
+                encontrado = true;
+            }
         }
         return resultado;
+    }
+
+    private static Post BuscarPost(Usuario usuario, Integer idPost) {
+        Iterator post = usuario.getPostList().iterator();
+        boolean postEncontrado = false;
+        Post resultadoPost = null;
+        Post iteratorPost;
+        while (post.hasNext() && !postEncontrado) {
+            iteratorPost = (Post) post.next();
+            if (iteratorPost.getIdPost() == idPost) {
+                resultadoPost = iteratorPost;
+                postEncontrado = true;
+            }
+        }
+        return resultadoPost;
     }
 }
