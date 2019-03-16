@@ -64,9 +64,9 @@ Document   : Form
             </div>
             
              <div class=" w3l-form-group">
-                <label>Telefono</label>
+                <label>Teléfono</label>
                 <div class="group">
-                    <i class="fas fa-user"></i>
+                    <i class="fas fa-phone"></i>
                     <input name ="telefono" type="tel" class="form-control" placeholder="Teléfono" required="required" />
                 </div>
             </div>
@@ -78,6 +78,17 @@ Document   : Form
                     <input name="password" type="password" class="form-control" placeholder="Contraseña" required="required" />
                 </div>
             </div>
+            
+            <div class=" w3l-form-group">
+                  <label>Subir Foto Perfil</label>
+                  <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="inputGroupFile02">
+                    <label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02"></label>
+                  </div>
+                  
+               
+            </div>    
+            
             <div class="forgot">
                 <a href="#">¿Olvidaste tu contraseña?</a>
                 <p><input type="checkbox">Recuérdame</p>
