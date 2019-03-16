@@ -20,6 +20,7 @@ import redSocial.dao.AmistadesFacade;
 import redSocial.dao.ComentariosGruposFacade;
 import redSocial.dao.GruposFacade;
 import redSocial.dao.PostFacade;
+import redSocial.dao.UsuarioFacade;
 import redSocial.modelos.Amistades;
 import redSocial.modelos.ComentariosGrupos;
 import redSocial.modelos.Grupos;
@@ -48,7 +49,7 @@ public class PerfilUsuarioControlador extends HttpServlet {
     public ComentariosGruposFacade ComentariosGruposDao;
     
     @EJB
-    public AmistadesFacade AmistadesDao;
+    public UsuarioFacade AmistadesDao;
     
     
 
