@@ -82,25 +82,6 @@
                     <div class="subheading mb-5">
                         <a href="mailto:name@email.com">${usuario.email}</a>
                     </div>
-                    <div class="subheading mb-2 text-secondary">Mis últimas Publicaciones</div>
-                    <tr>
-                        <c:forEach items="${usuario.postList}" var="Post">
-                        <form action="PerfilUsuario" method="POST">
-                            <div class="container">
-                                <div class="row">
-
-                                    <div class="col-8">
-                                        <p class="lead mb-5">${Post.contenido}</p>
-                                    </div>
-                                    <div class="col-4">
-                                        <button type="submit" value="${Post.idPost}" name="borrarPost" class="btn btn-secondary btn-lg active" aria-pressed="true">Borrar Comentario</button>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </form>
-                    </c:forEach>
-                    </tr>
                     <div class="social-icons">
                         <a href="#">
                             <i class="fab fa-linkedin-in"></i>
@@ -115,6 +96,50 @@
                             <i class="fab fa-facebook-f"></i>
                         </a>
                     </div>
+                    <br>
+                    </br>
+                    
+                    <div class="subheading mb-2 text-secondary">Mis últimas Publicaciones</div>
+                    <tr>
+                        <c:forEach items="${usuario.postList}" var="Post">
+                        <form action="PerfilUsuario" method="POST">
+                            <div class="container">
+                                <div class="row">
+
+                                    <div class="col-8">
+                                        <p class="lead mb-5">${Post.contenido}</p>
+                                    </div>
+                                    <div class="col-4">
+                                        <button type="submit" value="${Post.idPost}" name="borrarPost" class="btn btn-secondary btn-lg active" aria-pressed="true">Borrar Publicación</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </form>
+                    </c:forEach>
+                    </tr>
+                    
+                    <div class="subheading mb-2 text-primary">Mis últimas Publicaciones en Grupos</div>
+                    <tr>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-3">
+                                <div class="subheading mb-2 text-secondary">Nombre del grupo</div>
+                                Bike Mountains
+                            </div>
+                            <div class="col-8">
+                                <div class="subheading mb-2 text-secondary">Comentario</div>
+                                Buenas a todos, os recuerdo que esta tarde a las 16.00 tenemos la salida al Llano de la perdiz. Se ruega puntualidad.
+                            </div>
+                            <div class="col-1">
+                                <br>
+                                </br>
+                                <button type="submit" value="" name="borrarPost" class="btn btn-danger btn-lg active" aria-pressed="true">Borrar</button>
+                            </div>
+                        </div>
+                    </    
+                    </tr>
+                    
                 </div>
             </section>
 
@@ -129,6 +154,8 @@
                         <div class="col-sm-4">
                             <img class="img-fluid img-profile rounded-circle mx-auto mb-2" src="perfil/img/profile3.jpg" alt="">
                             <h3 class="mb-0 text-secondary text-center">Jesús España</h3>
+                            <br>
+                            <button type="button" class="btn btn-primary btn-lg btn-block">Dejar de Seguir</button>
 
                         </div>
 
@@ -136,7 +163,7 @@
                         <div class="col-sm-8">
                             <div class="resume-content">
                                 <div class="subheading mb-3 text-primary">Su último comentario</div>
-                                <p>Bring to the table win-win survival strategies to ensure proactive domination. At the end of the day, going forward, a new normal that has evolved from generation X is on the runway heading towards a streamlined cloud solution. User generated content in real-time will have multiple touchpoints for offshoring.</p>
+                                <p>Chic@s ¿alguien tiene los apuntes de la asignatura Programacion Avanzada II y puede prestarmelos? Invito a unas cervezas quien me los consiga. Gracias a tod@s</p>
                             </div>
                         </div>
                     </div>
@@ -145,6 +172,8 @@
                         <div class="col-sm-4">
                             <img class="img-fluid img-profile rounded-circle mx-auto mb-2" src="perfil/img/profile2.jpg" alt="">
                             <h3 class="mb-0 text-secondary text-center">Jorge Cruzado</h3>
+                            <br>
+                            <button type="button" class="btn btn-primary btn-lg btn-block">Dejar de Seguir</button>
 
                         </div>
 
@@ -152,7 +181,9 @@
                         <div class="col-sm-8">
                             <div class="resume-content">
                                 <div class="subheading mb-3 text-primary">Su último comentario</div>
-                                <p>Bring to the table win-win survival strategies to ensure proactive domination. At the end of the day, going forward, a new normal that has evolved from generation X is on the runway heading towards a streamlined cloud solution. User generated content in real-time will have multiple touchpoints for offshoring.</p>
+                                <p>OMG! Llevo varios dias con GlassFish y no consigo que funcione. Yo me rindo me paso a Payara, jajaja</p>
+                                <p>En serio, lo de GlassFish no es normal, lo he instalado y reinstalado 1000 veces.</p>
+                                <p>Tiene toda la pinta de que GlassFish no me va a funcionar, tras varios intento no conecta. Mañana seguiré peleandome.</p>
                             </div>
                         </div>
                     </div>
